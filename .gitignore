@@ -1,0 +1,10 @@
+ebin
+deps
+.DS_Store
+.eunit
+.dialyzer.plt
+
+## emacs stuff
+**/#*
+**/.#*
+**/*~

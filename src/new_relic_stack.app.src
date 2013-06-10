@@ -1,0 +1,13 @@
+{application, new_relic_stack,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  newrelic
+                 ]},
+  {mod, { new_relic_stack_app, []}},
+  {env, []}
+ ]}.

@@ -1,0 +1,1 @@
+-define(NR(X), mwm_new_relic:apply({class, ?MODULE}, fun() -> X end)).
