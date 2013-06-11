@@ -25,7 +25,6 @@ rewrite_elli_conf(Mods, UrlRewriteF) ->
                                    {callback_args, ModArgs}]}
                 end,
                 Mods),
-    io:format("rewrite ~p ~p", [Mods, Rewrite]),
     [{elli_new_relic_stack_mw, [{url_rewrite, UrlRewriteF}]} | Rewrite].
 
 %% ---------------------------------------------------------------------------
