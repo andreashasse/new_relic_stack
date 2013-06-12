@@ -2,7 +2,8 @@
 
 -export([maybe_report_total/1,
          apply/2,
-         start/1, stop/1, done/0, init/1,
+         start/1, stop/0, done/0, init/1,
+         set_url/1,
          background_init/0,
          erase_state/0, get_state/0, init_from_state/1]).
 
@@ -37,7 +38,7 @@ apply(Name, Fun) ->
         start(Name),
         Fun()
     after
-        stop(Name)
+        stop()
     end.
 
 %% On a already existing stack:
@@ -52,15 +53,20 @@ start(Name) ->
     ok.
 
 %% Stop works in pair with start/1.
-stop(Name) ->
+stop() ->
     case get_state() of
         undefined -> ok;
-        State -> set_state(stop(State, fix_name(Name)))
+        State -> set_state(stop(State))
     end,
     ok.
 
 %% ---------------------------------------------------------------------------
 %% Special usecase API
+
+%% If you want to rewrite the url on the fly somewhere.
+set_url(Url) ->
+    RunTimeStat = get_state(),
+    set_state(RunTimeStat#runtime_stat{url = Url}).
 
 %% Run this function on the result of done/0 if you don't want to roll your
 %% own time measurement.
@@ -87,8 +93,8 @@ start(State, Name) ->
     State1 = maybe_stop_previous(State),
     add_new(Name, State1).
 
-stop(State, Name) ->
-    State1 = finish(State, Name),
+stop(State) ->
+    State1 = finish(State),
     maybe_start_previous(State1).
 
 done(undefined) -> undefined;
@@ -136,8 +142,8 @@ get_state() ->
 %% ---------------------------------------------------------------------------
 %% State handling
 
-finish(State, Name) ->
-    [#ep{name = Name, times = [{Start, undefined}|Times]}=Ep|Eps] =
+finish(State) ->
+    [#ep{times = [{Start, undefined}|Times]}=Ep|Eps] =
         State#runtime_stat.queue,
     State#runtime_stat{
       queue = Eps,
