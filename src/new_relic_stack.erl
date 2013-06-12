@@ -65,8 +65,10 @@ stop() ->
 
 %% If you want to rewrite the url on the fly somewhere.
 set_url(Url) ->
-    RunTimeStat = get_state(),
-    set_state(RunTimeStat#runtime_stat{url = Url}).
+    case get_state() of
+        undefined -> ok;
+        RunTimeStat -> set_state(RunTimeStat#runtime_stat{url = Url})
+    end.
 
 %% Run this function on the result of done/0 if you don't want to roll your
 %% own time measurement.
