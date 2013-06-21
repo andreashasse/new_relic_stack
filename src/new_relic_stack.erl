@@ -3,8 +3,8 @@
 -export([maybe_report_total/1,
          apply/2,
          start/1, stop/0, done/0, init/1,
-         set_url/1,
-         background_init/0,
+         set_url/1, get_url/0,
+         background_init/1,
          erase_state/0, get_state/0, init_from_state/1]).
 
 -record(ep,
@@ -14,6 +14,7 @@
 -record(runtime_stat,
         {done = [] :: [#ep{}],
          url :: binary(),
+         is_background = false :: boolean(),
          queue = [] :: [#ep{}]
         }).
 
@@ -70,6 +71,12 @@ set_url(Url) ->
         RunTimeStat -> set_state(RunTimeStat#runtime_stat{url = Url})
     end.
 
+get_url() ->
+    case get_state() of
+        undefined -> undefined;
+        RunTimeStat -> RunTimeStat#runtime_stat.url
+    end.
+
 %% Run this function on the result of done/0 if you don't want to roll your
 %% own time measurement.
 maybe_report_total(undefined) -> ok;
@@ -78,8 +85,8 @@ maybe_report_total({Url, Time}) ->
 
 %% Use this instead of init/1 if you want the work in
 %% this process to be reported as background work.
-background_init() ->
-    set_state(#runtime_stat{}).
+background_init(Name) ->
+    set_state(#runtime_stat{url = {background, Name}, is_background = true}).
 
 %% Use this in conjuntion with erase_state/0 or get_state/0
 %% if you have serial work that is done in several processes
