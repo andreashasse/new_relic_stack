@@ -115,6 +115,7 @@ done(#runtime_stat{done = Done, url = Url, queue = []}) ->
 total_time(Done) ->
     lists:sum(lists:map(fun ep_time/1, Done)).
 
+report(#ep{name = {_Url, ignore}}) -> ok;
 report(EP) ->
     statman_histogram:record_value(
       EP#ep.name, statman_histogram:bin(ep_time(EP))).
