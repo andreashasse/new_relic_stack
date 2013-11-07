@@ -8,6 +8,5 @@
                   stdlib,
                   newrelic
                  ]},
-  {mod, { new_relic_stack_app, []}},
   {env, []}
  ]}.
