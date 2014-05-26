@@ -6,7 +6,8 @@
   {applications, [
                   kernel,
                   stdlib,
-                  newrelic
+                  newrelic,
+                  elli
                  ]},
   {env, []}
  ]}.

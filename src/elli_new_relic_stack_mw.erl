@@ -8,14 +8,14 @@ preprocess(Req, Args) ->
     new_relic_stack:init(url(Req, Args)),
     Req.
 
-handle_event(Event, EventArgs, Args) ->
+handle_event(Event, EventArgs, _Args) ->
     case lists:member(Event, ?END_EVENTS) of
         true  -> {Url, _StackTotalTime} = new_relic_stack:done(),
                  log_total(EventArgs, Url);
         false -> ok
     end.
 
-log_total([Req, _ResponseCode, _ResponseHeaders, _, Timings], Url) ->
+log_total([_Req, _ResponseCode, _ResponseHeaders, _, Timings], Url) ->
     RequestTime = timings_diff(Timings, user_start, user_end),
     statman_histogram:record_value(
       {Url, total}, statman_histogram:bin(RequestTime)).
